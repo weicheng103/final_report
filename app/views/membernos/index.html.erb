@@ -1,0 +1,264 @@
+<div style="width:300px;height:300px">
+<%= form_tag membernos_path, method: :get do%>
+<h4>請輸入要分析的年度</h4><br>
+<select name="year" id="city_id">
+    <% @search.each do |se|%>
+    <option value="<%=se.m_count%>"><%=se.m_count%></option>
+    <%end%>
+</select>
+<%= submit_tag "查詢"%>
+<%end%>
+<%
+        nyear = params[:year]
+        fyear = nyear.to_i - 1
+        ftyear = fyear.to_i - 1
+        title = []
+        dt = []
+        @Title.each do |t|
+            title.push(t.C_count)
+        end
+        now = 0
+        sum = 0
+
+        @data.each do |d|
+            if now == 0
+                now = d.C_count
+            end
+            if  now == d.C_count
+                sum = sum +1
+                now = d.C_count
+            else
+                dt.push(sum)
+                sum = 0
+                now = d.C_count
+            end
+        end
+
+        ndt = []
+        fdt = []
+        ftdt = []
+        now = 0
+        sum = 0
+        @ndata.each do |nd|
+            if now == 0
+                now = nd.m_count
+            end
+            if  nd.m_count % 3  == 0 && nd.m_count != 1 && now != nd.m_count
+                puts nd.m_count
+                ndt.push(sum)
+                sum = 0
+                sum = sum +1
+                now = nd.m_count
+            else
+                sum = sum +1
+                now = nd.m_count
+            end
+        end
+        now = 0
+        sum = 0
+        @fdata.each do |nd|
+            if now == 0
+                now = nd.m_count
+            end
+            if  nd.m_count % 3  == 0 && nd.m_count != 1 && now != nd.m_count
+                puts nd.m_count
+                fdt.push(sum)
+                sum = 0
+                sum = sum +1
+                now = nd.m_count
+            else
+                sum = sum +1
+                now = nd.m_count
+            end
+        end
+        now = 0
+        sum = 0
+        @ftdata.each do |nd|
+            if now == 0
+                now = nd.m_count
+            end
+            if  nd.m_count % 3  == 0 && nd.m_count != 1 && now != nd.m_count
+                puts nd.m_count
+                ftdt.push(sum)
+                sum = 0
+                sum = sum +1
+                now = nd.m_count
+            else
+                sum = sum +1
+                now = nd.m_count
+            end
+        end
+
+%>
+<script type="text/javascript"  charset="UTF-8">
+$(function () {
+    $('#container').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: '<%=params[:year] %>年向？家購買比率分配'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>向{point.name}家同行購買</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Browser share',
+            data: [
+                
+                <% title.each_with_index do |t,i|%>
+                   [ '<%=t%>',<%=dt[i]%>],
+                <%end%>
+                
+            ]
+        }]
+    });
+});
+</script>
+<script type="text/javascript"  charset="UTF-8">
+$(function () {
+    $('#container2').highcharts({
+        chart: {
+            type: 'spline'
+        },
+        title: {
+            text: '<%=params[:year] %>與前兩年之忠誠度曲線'
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: {
+            type: 'linear',
+            categories: ['第一季', '第二季', '第三季', '第四季'],
+            title: {
+                text: '季'
+            }
+        },
+        yAxis: {
+            title: {
+                text: '忠誠度人數'
+            },
+            min: 0
+        },
+        tooltip: {
+            headerFormat: '<b>年份：{series.name}</b><br>',
+            pointFormat: '{point.y} 人'
+        },
+
+        plotOptions: {
+            spline: {
+                marker: {
+                    enabled: true
+                }
+            }
+        },
+
+        series: [{
+            name: '<%=nyear%>',
+
+            data: [
+                <% ndt.each do |dt| %>
+                    ['',<%= dt%>],
+                <%end%>
+            ]
+        }, {
+            name: '<%=fyear%>',
+            data: [
+                <% fdt.each do |dt| %>
+                    ['',<%= dt%>],
+                <%end%>
+            ]
+        }, {
+            name: '<%=ftyear %>',
+            data: [
+                <% ftdt.each do |dt| %>
+                    ['',<%= dt%>],
+                <%end%>
+            ]
+        }]
+    });
+});
+</script>
+<script type="text/javascript"  charset="UTF-8">
+$(function () {
+    $('#container3').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '<%=params[:year] %>年向？家購買人數'
+        },
+        subtitle: {
+            text: ''
+        },
+        xAxis: {
+            type: '向？家購買',
+            labels: {
+                rotation: 0,
+                style: {
+                    fontSize: '13px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: '向？家購買人數'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            pointFormat: '<b>{point.y} 人</b>'
+        },
+        series: [{
+            name: 'People',
+            data: [
+                ['',0],
+            <% title.each_with_index do |t,i|%>
+            <%
+                if dt[i].to_i < 30 
+                    break
+                end
+            %>
+                ['<%= t%>家', <%= dt[i]%>],
+            <%end%>
+            ],
+            dataLabels: {
+                enabled: false,
+                rotation: -90,
+                color: '#FFFFFF',
+                align: 'right',
+                format: '', // one decimal
+                y: 10, // 10 pixels down from the top
+                style: {
+                    fontSize: '10px',
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        }]
+    });
+});
+</script>
+</div>
+<div id="container" style="width: 600px; height: 300px; position: absolute;buttom:0px; right:50px "></div>
+<div id="container2" style="width: 700px; height: 300px; position:absolute;top:0px; right:50px  "></div>
+<div id="container3" style="width: 600px; height: 300px;  position:absolute;buttom:0px; left:50px"></div>
