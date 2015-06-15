@@ -161,30 +161,6 @@ ActiveRecord::Schema.define(version: 0) do
     t.integer "SysError_Mark", limit: 4,  null: false
   end
 
-  create_table "b01a2_tourusage", id: false, force: :cascade do |t|
-    t.integer  "Activity_Seq",    limit: 4,  null: false
-    t.integer  "Member_No",       limit: 4,  null: false
-    t.datetime "Usage_Time",                 null: false
-    t.string   "Usage_Type",      limit: 8,  null: false
-    t.string   "Usage_Source",    limit: 8,  null: false
-    t.string   "Departure_City",  limit: 4,  null: false
-    t.string   "Region_Name",     limit: 20, null: false
-    t.datetime "Start_Tour_Date",            null: false
-    t.datetime "End_Tour_Date",              null: false
-    t.string   "Airline_Id",      limit: 2,  null: false
-    t.integer  "Bookable_Only",   limit: 4,  null: false
-    t.string   "Tour_Type",       limit: 8,  null: false
-    t.string   "Serious_Code",    limit: 10, null: false
-    t.string   "Serious_Name",    limit: 20, null: false
-  end
+# Could not dump table "b01a2_tourusage" because of following ActiveRecord::StatementInvalid
+#   Mysql2::Error: Lost connection to MySQL server during query: SHOW KEYS FROM `b01a2_tourusage`
 
-  create_table "b01b1_memberno", id: false, force: :cascade do |t|
-    t.integer  "Member_No",       limit: 4, null: false
-    t.string   "Member_Type",     limit: 6, null: false
-    t.datetime "Member_Birthday",           null: false
-    t.integer  "Agent_No",        limit: 4, null: false
-    t.integer  "Company_No",      limit: 4, null: false
-    t.integer  "Cancel_Mark",     limit: 4, null: false
-  end
-
-end
